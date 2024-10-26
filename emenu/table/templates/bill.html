@@ -1,0 +1,134 @@
+
+{% extends 'table_home.html'%} 
+{% load static %}
+
+
+    {% block content %}
+    {% comment %} <div class="tab-class  wow fadeInUp" data-wow-delay="0.1s">
+        <h3>In Billing </h3>
+    </div>
+ {% endcomment %}
+ <div class="bill-section">
+    <h1>Your Bill Summary</h1>
+    <div class="table-info">
+      <p><strong>Table Number:</strong> {{ table_number }}</p>
+      <p><strong>Date:</strong> {{ date|date:"F j, Y, g:i a" }}</p>
+    </div>
+  
+    <table class="bill-table">
+      <thead>
+        <tr>
+          <th>Item Name</th>
+          <th>Quantity</th>
+          <th>Price per Unit</th>
+          <th>Total Price</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for order in orders %}
+        <tr>
+          <td>{{ order.item_name }}</td>
+          <td>{{ order.quantity }}</td>
+          <td>${{ order.price_per_unit }}</td>
+          <td>${{ order.total_price }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="3"><strong>Total Bill:</strong></td>
+          <td><strong>${{ subtotal }}</strong></td>
+        </tr>
+      </tfoot>
+    </table>
+  
+    <button class="payment-btn">Proceed to Payment</button>
+  </div>
+  <style>
+    .bill-section {
+        max-width: 800px;
+        margin: auto;
+        padding: 20px;
+        background: #f9f9f9;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      
+      .bill-section h1 {
+        text-align: center;
+        color: #333;
+      }
+      
+      .bill-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+      }
+      
+      .bill-table th, .bill-table td {
+        padding: 12px;
+        text-align: center;
+        border-bottom: 1px solid #ddd;
+      }
+      
+      .bill-table th {
+        background: #f4f4f4;
+      }
+      
+      .bill-table tbody tr:nth-child(even) {
+        background: #f9f9f9;
+      }
+      
+      .tfoot {
+        font-weight: bold;
+      }
+      
+      .payment-btn {
+        display: block;
+        width: 100%;
+        padding: 15px;
+        background: #28a745;
+        color: white;
+        font-size: 18px;
+        border: none;
+        cursor: pointer;
+        margin-top: 20px;
+        border-radius: 5px;
+      }
+      
+      .payment-btn:hover {
+        background: #218838;
+      }
+      </style>        
+  
+<!-- Finish Button to delete the item and table number to dstart new session -->
+
+
+<form action="{% url 'cancel_item_finish' %}" method="POST" style="margin-left: 5px;">
+    {% csrf_token %}
+    <button onclick="finishSession()" type="submit">Finish</button>
+</form>
+
+
+
+    <script>
+    function finishSession() {
+        if (confirm("Are you sure you want to finish?")) {
+            localStorage.removeItem('table_number');
+            localStorage.removeItem('uniqueID');
+    
+            document.querySelector('.table-number-display').innerText = "";
+            alert('Thank you for visiting!');
+            
+            // Show the popup again for entering table number
+            document.querySelector("#modalOverlay").style.display = "block";
+            document.querySelector(".popup").style.display = "block";
+        }
+    }
+    
+
+</script>
+    {% endblock content %}
+    
+   
+    </html>

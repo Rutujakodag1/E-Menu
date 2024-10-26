@@ -1,0 +1,117 @@
+{% extends "counter/base.html" %}
+{% load static %}
+{% block table %}
+<div class="content-wrapper">
+<div class="container">
+    <h2 class="text-center"style="color:#feaf39; margin-top: 20px !important;">All Tables</h2>
+    <div class="tables-container">
+        <div class="d-flex flex-wrap">
+            {% for table_number in table_numbers %}
+                <div class="flex-shrink-0 d-flex justify-content-center align-items-center rounded"
+                     style="width: 70px; height: 70px; background-color: #feaf39; color: white; font-size: 24px; margin: 10px;"
+                     data-bs-toggle="modal" data-bs-target="#tableModal" data-table-number="{{ table_number }}">
+                     
+                    {{ table_number }}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="tableModal" tabindex="-1" aria-labelledby="tableModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="tableModalLabel">Receipt</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id ="modalBodyContent">
+          
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" style="background-color: #FEA116; color: white;border: none;" id="doneButton">Done</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const tableModal = new bootstrap.Modal(document.getElementById('tableModal'));
+        const modalBodyContent = document.getElementById('modalBodyContent');
+        let currentTableNumber;  // Store the current table number globally
+    
+        // Fetch the bill data when a table is clicked
+        document.querySelectorAll('[data-bs-toggle="modal"]').forEach((element) => {
+            element.addEventListener('click', function () {
+                const table_number = this.getAttribute('data-table-number');
+                currentTableNumber = table_number;  // Save the current table number for deletion
+    
+                fetch(`/counter/bill/${table_number}/`)  // Fetch the bill for the selected table
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            modalBodyContent.innerHTML = `<p>${data.error}</p>`;
+                        } else {
+                            modalBodyContent.innerHTML = `
+                                <h5>Bill for Table ${table_number}</h5>
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Item Name</th>
+                                            <th>Quantity</th>
+                                            <th>Price</th>
+                                            <th>Total Price</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${data.orders.map(order => `
+                                            <tr>
+                                                <td>${order.item_name}</td>
+                                                <td>${order.quantity}</td>
+                                                <td>${order.price}</td>
+                                                <td>${order.total_price}</td>
+                                            </tr>
+                                        `).join('')}
+                                        <tr class="table-info">
+                                            <td colspan="3"><strong>Total Bill</strong></td>
+                                            <td><strong>${data.total_amount}</strong></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            `;
+                        }
+                        tableModal.show();
+                    })
+                    .catch(error => console.error('Error fetching bill data:', error));
+            });
+        });
+    
+        // Handle deletion when the "Done" button is clicked
+        document.getElementById('doneButton').addEventListener('click', function () {
+            if (currentTableNumber) {
+                // Send delete request for the current table's orders
+                fetch(`/counter/delete_orders/${currentTableNumber}/`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',  // Include CSRF token for security
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert(`Orders for Table ${currentTableNumber} have been finished.`);
+                        tableModal.hide();  // Close the modal
+                    } else {
+                        console.error('Error finishing orders.');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            }
+        });
+    });
+    </script>
+    
+{% endblock %}

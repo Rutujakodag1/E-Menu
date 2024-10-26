@@ -1,0 +1,149 @@
+{% extends "kitchen/base.html" %}
+{% load static %}
+{% block table %}
+<div class="content-wrapper">
+    <div class="container">
+        {% comment %} <h2 class="text-center" style="color:#feaf39; margin-top: 105px !important;">All Tables</h2> {% endcomment %}
+        <h5 class="section-title ff-secondary text-center fw-normal  mb-2 " style="color: #FEA116; font-size: 30px;">All Tables</h5>
+
+        {% comment %} <h5 class="section-title text-center mt-2 mb-2" style="color: #FEA116; font-weight: bold;">Confirmed Orders</h5> {% endcomment %}
+
+        <div class="tables-container">
+            <div class="d-flex flex-wrap">
+                {% for table_number in table_numbers %}
+                    <div class="flex-shrink-0 d-flex justify-content-center align-items-center rounded"
+                         style="width: 70px; height: 70px; background-color: #feaf39; color: white; font-size: 24px; margin: 10px;"
+                         data-bs-toggle="modal" data-bs-target="#orderModal"
+                         data-table-number="{{ table_number }}">
+                        {{ table_number }}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+  .modal-content {
+      border-radius: 10px;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+  }
+
+  .modal-header {
+      background-color: #FEA116;
+  }
+
+  .modal-title {
+      color: white;
+  }
+
+  .modal-body {
+      padding: 20px;
+  }
+
+  .order-table {
+      width: 100%;
+      border-collapse: collapse;
+  }
+
+  .order-table th, .order-table td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+  }
+
+  .order-table th {
+      background-color: #f2f2f2;
+      color: #333;
+  }
+
+  .order-table tr:hover {
+      background-color: #f1f1f1;
+  }
+
+  .customer-info {
+      margin-bottom: 15px;
+      font-weight: bold;
+  }
+</style>
+
+<div class="modal fade" id="orderModal" tabindex="-1" aria-labelledby="orderModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="orderModalLabel">Order Details</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" id="orderModalBody">
+              <!-- Order data will be inserted here -->
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" style="background-color: #FEA116; color: white;border: none;" id="doneButton">Done</button>
+
+          </div>
+      </div>
+  </div>
+</div>
+
+
+<script>
+    // Static order data
+    const ordersData = {
+        "1": {
+            "items": [
+                {"item": "Grilled Chicken", "qty": 2},
+                {"item": "French Fries", "qty": 1},
+                {"item": "Soda", "qty": 2},
+            ]
+        },
+        "2": {
+            "items": [
+                {"item": "Burger", "qty": 1},
+                {"item": "Salad", "qty": 1},
+                {"item": "Juice", "qty": 1},
+            ]
+        }
+    };
+
+    // Event listener for the modal
+    document.addEventListener('DOMContentLoaded', function () {
+        var orderModal = document.getElementById('orderModal');
+        var orderModalBody = document.getElementById('orderModalBody');
+
+        orderModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget; // Button that triggered the modal
+            var table_number = button.getAttribute('data-table-number'); // Extract info from data-* attributes
+            
+            // Fetch static order data
+            var orderData = ordersData[table_number];
+            if (orderData) {
+                var orderDetailsHTML = `
+                    <div class="customer-info">
+                        <p><strong>Table No:</strong> ${table_number}</p>
+                    </div>
+                    <table class="order-table">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Qty</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${orderData.items.map(item => `
+                                <tr>
+                                    <td>${item.item}</td>
+                                    <td>${item.qty}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+                orderModalBody.innerHTML = orderDetailsHTML;
+            } else {
+                orderModalBody.innerHTML = `<p>No orders found for this table.</p>`;
+            }
+        });
+    });
+</script>
+
+{% endblock %}
