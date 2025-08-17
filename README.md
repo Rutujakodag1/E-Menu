@@ -31,6 +31,11 @@ The Mini Food Ordering System is a **web-based platform** designed to streamline
 - **Database**: SQLite  
 
 ---
+## 🚀 Methodology
+
+<img width="969" height="1010" alt="7f55b3d1-26b3-4874-878c-641a250888a3" src="https://github.com/user-attachments/assets/d4678fc5-1f51-4ac1-9403-bdd0346c1c45" />
+
+
 
 ## 📸 Screenshots
 
