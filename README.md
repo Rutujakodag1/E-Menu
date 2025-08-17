@@ -35,13 +35,13 @@ The Mini Food Ordering System is a **web-based platform** designed to streamline
 ## 📸 Screenshots
 
 ### 🍽️ Table User
-![Table User Screenshot](screenshots/table1.png)  
+![Table User Screenshot](screenshots/table1.png) 
 ![Table User Screenshot](screenshots/table2.png)  
 ![Table User Screenshot](screenshots/table3.png)  
-![Table User Screenshot](screenshots/table4.png)  
+![Table User Screenshot](screenshots/table4.png)    
 
 ### 👨‍🍳 Kitchen User
-![Kitchen User Screenshot](screenshots/kitchen.png)  
+![Kitchen User Screenshot](screenshots/kitchen.png)    
 
 ### 💰 Counter User
 ![Counter User Screenshot](screenshots/counter1.png)  
@@ -53,8 +53,8 @@ The Mini Food Ordering System is a **web-based platform** designed to streamline
 
 ```bash
 # Clone repo
-git clone https://github.com/siddhidoiphode/mini-project.git
-cd mini-project
+git clone https://github.com/Rutujakodag1/miniProject.git
+cd miniProject
 
 # Create virtual environment
 python -m venv venv
@@ -66,5 +66,6 @@ pip install -r requirements.txt
 # Apply migrations and start the server
 python manage.py migrate
 python manage.py runserver
+```
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000) in your browser to use the app.
 
