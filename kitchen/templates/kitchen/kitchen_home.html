@@ -1,0 +1,123 @@
+{% extends "kitchen/base.html" %}
+{% load static %}
+
+{% block start %}
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+            <h5 class="section-title ff-secondary text-center fw-normal mb-5" style="color: #FEA116; font-size: 30px;">Orders</h5>
+            <div class="tab-class text-center wow fadeInUp" data-wow-delay="0.1s">
+                <div class="tab-content">
+                    <div id="tab-1" class="tab-pane fade show p-0 active">
+                        <div class="row g-4">
+
+                            <!-- DataTables CSS -->
+                            <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+                            <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+                            <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+
+                            <body style="background-color: #ffffff;">
+                                <div class="container">
+                                    <div class="row">
+                                        {% for table_number, orders in tables_with_orders.items %}
+                                        <div class="col-lg-6 mb-4">
+                                            <div class="card border-0 shadow h-100" style="background-color: #f7f3f0;">
+                                                <div class="card-body">
+                                                    <!-- Table Number Badge -->
+                                                    <div class="d-flex justify-content-center align-items-center mb-3">
+                                                        <span class="badge" style="background-color: #FEA116; color: white; padding: 10px 20px; border-radius: 10px; font-size: 18px; box-shadow: 0px 5px 10px rgba(0,0,0,0.2);">
+                                                            Table: {{ table_number }}
+                                                        </span>
+                                                    </div>
+
+                                                    <!-- Pending Orders Section -->
+                                                    <h5 class="section-title text-center mt-2 mb-2" style="color: #fe4c16; font-weight: bold;">Pending Orders</h5>
+                                                    <div class="order-info w-100 mt-3">
+                                                        <form method="post" action="{% url 'confirm_order' table_number %}">
+                                                            {% csrf_token %}
+                                                            <table id="table-{{ table_number }}" class="table table-bordered text-center" style="font-size: 16px;">
+                                                                <thead class="table-light">
+                                                                    <tr>
+                                                                        <th>Item Name</th>
+                                                                        <th>Quantity</th>
+                                                                        <th>Action</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    {% for order in orders.pending %}
+                                                                    <tr>
+                                                                        <td>{{ order.name }}</td>
+                                                                        <td>{{ order.quantity }}</td>
+                                                                        <td>
+                                                                            <a href="{% url 'delete_order' order.id %}" style="color: red;">
+                                                                                <i class="fa-solid fa-trash" style="font-size: 20px;"></i>
+                                                                            </a>
+                                                                        </td>
+                                                                    </tr>
+                                                                    {% empty %}
+                                                                    <tr>
+                                                                        <td colspan="3">No pending orders for this table.</td>
+                                                                    </tr>
+                                                                    {% endfor %}
+                                                                </tbody>
+                                                            </table>
+                                                            {% if orders.pending %}
+                                                            <button type="submit" class="btn btn-warning mt-3" style="font-size: 15px; font-weight: bold; color: white; border-radius: 10px;">
+                                                                Done
+                                                            </button>
+                                                            {% endif %}
+                                                        </form>
+                                                    </div>
+
+                                                    <div style="height: 2px; background-color: #210808; width: 100%; margin: 15px auto; border-radius: 1px;"></div>
+
+                                                    <!-- Confirmed Orders Section -->
+                                                    <h5 class="section-title text-center mt-2 mb-2" style="color: #FEA116; font-weight: bold;">Confirmed Orders</h5>
+                                                    <div class="billing-info w-100 mt-3">
+                                                        <table class="table table-bordered text-center" style="font-size: 16px;">
+                                                            <thead class="table-light">
+                                                                <tr>
+                                                                    <th>Item Name</th>
+                                                                    <th>Quantity</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                {% for order in orders.confirmed %}
+                                                                <tr>
+                                                                    <td>{{ order.name }}</td>
+                                                                    <td>{{ order.quantity }}</td>
+                                                                </tr>
+                                                                {% empty %}
+                                                                <tr>
+                                                                    <td colspan="2">No confirmed orders for this table.</td>
+                                                                </tr>
+                                                                {% endfor %}
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </body>
+
+                            <script>
+                                $(document).ready(function() {
+                                    // Initialize DataTable for each table
+                                    {% for table_number in tables_with_orders.keys %}
+                                    $('#table-{{ table_number }}').DataTable();
+                                    {% endfor %}
+                                });
+                            </script>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock start %}

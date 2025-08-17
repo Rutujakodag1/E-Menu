@@ -1,0 +1,197 @@
+{% extends "counter/base.html" %}
+{% load custom_filters %}
+{% load static %}
+{% block start %}
+
+<div class="container">
+    <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+        <h5 class="section-title ff-secondary text-center fw-normal mb-3 mt-3" style="color: #FEA116; font-size: 30px;">
+            Orders by Table
+        </h5>
+        {% comment %} <div class="tab-class text-center wow fadeInUp" data-wow-delay="0.1s">
+            <div class="tab-content">
+                <div id="tab-1" class="tab-pane fade show p-0 active">
+                    <div class="row g-4">
+                        <!-- Loop over grouped orders by table number -->
+
+                        {% for table_number, items in confirmed_orders.items %}
+                        <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                            <div class="order-item bg-light rounded p-4">
+                                <div class="d-flex align-items-center mb-3">
+                                    <h4 class="mb-0" style="color: #FEA116;">Table Number: {{ table_number }}</h4>
+                                </div>
+                                <div class="billing-info w-100 mt-3">
+                                    <table class="table table-bordered text-center" style="font-size: 16px;">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Item Name</th>
+                                                <th>Quantity</th>
+                                                <th>Price</th>
+                                                <th>Total Price</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Loop through each item for the current table -->
+                                            {% for item_name, item_data in items.items %}
+                                            <tr>
+                                                <td>{{ item_name }}</td>
+                                                <td>{{ item_data.quantity }}</td>
+                                                <td>${{ item_data.price|floatformat:2 }}</td>
+                                                <td>${{ item_data.total_price|floatformat:2 }}</td> <!-- Display total item price -->
+                                            </tr>
+                                            {% empty %}
+                                            <tr>
+                                                <td colspan="4">No confirmed orders for this table.</td>
+                                            </tr>
+                                            {% endfor %}
+                                                
+                                            <tr class="table-info">
+                                                <td colspan="3"><strong>Total Bill</strong></td>
+                                                <td><strong>${{ table_totals|get_value_from_dict:table_number|floatformat:2 }}</strong></td> <!-- Display total table bill -->
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <!-- Done Button for this table -->
+                                    <button id="doneButton-{{ table_number }}" class="btn btn-success mt-3" data-table="{{ table_number }}">Done</button>
+
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div> {% endcomment %}
+        <div class="tab-class text-center wow fadeInUp" data-wow-delay="0.1s">
+            <div class="tab-content">
+                <div id="tab-1" class="tab-pane fade show p-0 active">
+                    <div class="row g-4">
+                        <!-- Loop over grouped orders by table number -->
+                        {% for table_number, items in confirmed_orders.items %}
+                        <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                            <div class="order-item bg-white rounded p-4 shadow" style="border: 2px solid #FEA116;">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="icon-container me-2">
+                                        <i class="fas fa-utensils fa-2x" style="color: #FEA116;"></i>
+                                    </div>
+                                    <h4 class="mb-0" style="color: #FEA116;">Table Number: {{ table_number }}</h4>
+                                </div>
+                                <div class="billing-info w-100 mt-3">
+                                    <table class="table table-striped text-center" style="font-size: 16px;">
+                                        <thead class="table-warning">
+                                            <tr>
+                                                <th>Item Name</th>
+                                                <th>Quantity</th>
+                                                <th>Price</th>
+                                                <th>Total Price</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Loop through each item for the current table -->
+                                            {% for item_name, item_data in items.items %}
+                                            <tr>
+                                                <td>{{ item_name }}</td>
+                                                <td>{{ item_data.quantity }}</td>
+                                                <td>${{ item_data.price|floatformat:2 }}</td>
+                                                <td>${{ item_data.total_price|floatformat:2 }}</td>
+                                            </tr>
+                                            {% empty %}
+                                            <tr>
+                                                <td colspan="4" class="text-muted">No confirmed orders for this table.</td>
+                                            </tr>
+                                            {% endfor %}
+                                                
+                                            <!-- Total Row -->
+                                            <tr class="table-success">
+                                                <td colspan="3"><strong>Total Bill</strong></td>
+                                                <td><strong>${{ table_totals|get_value_from_dict:table_number|floatformat:2 }}</strong></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <!-- Done Button for this table -->
+                                    <button id="doneButton-{{ table_number }}" class="btn btn-success w-100 mt-3" data-table="{{ table_number }}" style="font-size: 16px;">
+                                        <i class="fas fa-check-circle"></i> Mark as Done
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+        
+        <!-- Add FontAwesome and custom CSS for the style -->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+        
+        <style>
+            .order-item {
+                transition: transform 0.2s ease-in-out;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+            .order-item:hover {
+                transform: translateY(-5px);
+            }
+            .icon-container {
+                width: 40px;
+                height: 40px;
+                background-color: #fff3e0;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .table-warning th {
+                background-color: #fdd99b;
+            }
+            .table-striped tbody tr:nth-of-type(odd) {
+                background-color: #fff7e6;
+            }
+            .btn-success {
+                font-weight: 600;
+                background-color: #38c172;
+                border-color: #38c172;
+            }
+            .btn-success:hover {
+                background-color: #2f9d5c;
+                border-color: #2f9d5c;
+            }
+        </style>
+
+<!-- Include the script below at the end of your HTML -->
+<script>
+    // Select all Done buttons and add an event listener for each
+    document.querySelectorAll('[id^="doneButton-"]').forEach(button => {
+        button.addEventListener('click', function () {
+            const tableNumber = this.getAttribute('data-table');  // Get table number from button's data attribute
+            const tableElement = this.closest('.col-lg-4');  // Select the parent element that holds this table's orders (adjust if needed)
+
+            if (tableNumber) {
+                // Send delete request for the current table's orders
+                fetch(`/counter/delete_orders/${tableNumber}/`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',  // Include CSRF token for security
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert(`Orders for Table ${tableNumber} have been finished.`);
+                        
+                        // Remove the table's element from the DOM after successful deletion
+                        tableElement.remove();
+                    } else {
+                        console.error('Error finishing orders.');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            }
+        });
+    });
+</script>
+
+{% endblock start %}
