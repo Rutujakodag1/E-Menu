@@ -2,8 +2,12 @@
 
 The Mini Food Ordering System is a **web-based platform** designed to streamline restaurant operations. It allows **customers, kitchen staff, and counter staff** to manage orders and payments efficiently, reducing errors and improving workflow. Built with **Django, HTML, CSS, and SQLite**, it demonstrates role-based access and organized order management.
 
+<!--   
 --
-
+ 
+---
+>>>>>>>  
+ -->
 
 ## 🚀 Features
 

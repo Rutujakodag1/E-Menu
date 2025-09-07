@@ -22,8 +22,11 @@ from django.conf import settings
 
 
 urlpatterns = [
+#   
     path('', views.home, name='home'),   # 👈 Landing page
      path('clear_table/<int:table_number>/', views.clear_table_session, name='clear_table'),
+#  
+# >>>>>>>  
     path('<int:id>/', views.table_home, name='table_home'),
     # path('', views.home, name='home'),
     path('',views.generate_qr,name='generate_qr'),

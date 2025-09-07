@@ -4,6 +4,7 @@ from django.shortcuts import render,get_object_or_404
 from table.models import Category,FoodItem
 from table.models import SubmittedItem
 
+#   
 def set_table_number(request):
     if request.method == "POST":
         table_number = request.POST.get("table_number")
@@ -40,14 +41,19 @@ def clear_table_session(request, table_number):
     return redirect("home")
 
 
+#  
+# >>>>>>>  
 def table_home(request, id=None):
     categories = Category.objects.all()
     table_number = request.session.get('table_number', None) 
 
+#   
     if "table_number" not in request.session:
         request.session["table_number"] = request.GET.get("table", None)
         table_number = request.session.get('table_number', None)
 
+#  
+# >>>>>>>  
     if id:  # if a category ID is provided in the URL
         selected_category = get_object_or_404(Category, id=id)
     else:  # otherwise, show the first category by default

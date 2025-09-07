@@ -19,6 +19,7 @@ from collections import defaultdict
 from django.db.models import Sum
 from kitchen.views import kitchen_home
 
+#   
 
 # in counter/views.py
 
@@ -47,6 +48,8 @@ def mark_as_done(request, table_number):
     return redirect("home")  # or wherever you want to redirect
 
 
+#  
+# >>>>>>>  
 def counter_home(request):
     confirmed_orders = SubmittedItem.objects.filter(status='confirmed').order_by('tableNumber')
 
